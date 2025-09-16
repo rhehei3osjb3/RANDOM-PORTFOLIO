@@ -1,229 +1,339 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Animated Portfolio — Welcome</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg-1:#03030a; --bg-2:#07102a; --neon1:#ff6ec7; --neon2:#7b61ff; --neon3:#00d4ff;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,var(--bg-1),var(--bg-2));color:#eaf6ff;overflow-x:hidden}
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Animated Portfolio — Welcome</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#03030a; --bg2:#07102a; --n1:#ff6ec7; --n2:#7b61ff; --n3:#00d4ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#eaf6ff;overflow-x:hidden}
 
-    header.site-header{position:fixed;left:0;right:0;top:18px;z-index:80;display:flex;justify-content:center;align-items:center;pointer-events:none}
-    .site-header .headline{padding:12px 24px;border-radius:14px;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.03);box-shadow:0 12px 50px rgba(2,2,10,0.6);opacity:0;transform:translateY(-8px) scale(0.98);transition:transform .48s cubic-bezier(.2,.9,.2,1),opacity .48s;pointer-events:auto}
-    .site-header.show .headline{opacity:1;transform:translateY(0) scale(1)}
-    .headline h2{margin:0;font-family:Orbitron,Inter,sans-serif;font-weight:900;letter-spacing:0.6px;font-size:18px;color:transparent;background:linear-gradient(90deg,var(--neon2),var(--neon3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 26px rgba(123,97,255,0.18)}
+  /* Header (hidden until hero finishes) */
+  header.site-header{position:fixed;left:0;right:0;top:18px;z-index:600;display:flex;justify-content:center;align-items:center;pointer-events:none}
+  .headline{padding:10px 22px;border-radius:12px;backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 40px rgba(0,0,0,0.6);opacity:0;transform:translateY(-6px);transition:opacity .45s, transform .45s}
+  .headline.show{opacity:1;transform:translateY(0)}
+  .headline h2{margin:0;font-family:Orbitron,Inter,sans-serif;font-weight:900;font-size:18px;background:linear-gradient(90deg,var(--n2),var(--n3));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(123,97,255,0.12)}
 
-    #bgCanvas{position:fixed;inset:0;z-index:0;display:block}
+  /* background particle canvas */
+  #bgCanvas{position:fixed;inset:0;z-index:0;display:block}
 
-    .hero{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:50;pointer-events:none}
-    .hero-wrap{width:100%;max-width:1400px;padding:18px}
-    .half{overflow:hidden;height:50vh;display:flex;align-items:center;justify-content:center}
+  /* HERO overlay (covers entire page) */
+  .hero-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;pointer-events:auto}
+  .hero-box{width:100%;max-width:1400px;padding:12px;text-align:center;pointer-events:none}
+  .hero-text{
+    font-family:Orbitron,Inter,system-ui; font-weight:900;
+    color:transparent; letter-spacing:-1px;
+    -webkit-text-stroke:1.6px rgba(2,2,6,0.55);
+    filter:drop-shadow(0 12px 80px rgba(123,97,255,0.12));
+    display:inline-block; white-space:nowrap;
+    transform-origin:center;
+  }
+  .hero-text .fill{
+    background:linear-gradient(90deg,var(--n1),var(--n2),var(--n3));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    display:inline-block;padding:8px 12px;
+  }
 
-    .hero-line{position:relative;font-family:Orbitron,Inter,system-ui;font-weight:900;font-size:clamp(48px,12vw,160px);line-height:0.88;text-align:center;color:transparent;letter-spacing:-1px;filter:drop-shadow(0 12px 80px rgba(123,97,255,0.12));-webkit-text-stroke:1.6px rgba(2,2,6,0.55)}
-    .hero-line .fill{background:linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;display:inline-block;padding:6px 8px}
+  /* triple underline */
+  .underline{display:block;margin-top:10px;width:86%;max-width:980px;margin-left:auto;margin-right:auto}
+  .underline span{display:block;height:4px;margin:6px 0;background:linear-gradient(90deg,var(--n2),var(--n3));box-shadow:0 10px 34px rgba(123,97,255,0.12);border-radius:3px}
 
-    .underline{display:block;margin-top:8px;width:86%;max-width:980px;margin-left:auto;margin-right:auto}
-    .underline span{display:block;height:3px;margin:6px 0;background:linear-gradient(90deg,var(--neon2),var(--neon3));box-shadow:0 8px 28px rgba(123,97,255,0.12);border-radius:2px}
+  /* split halves (cut) */
+  .half{overflow:hidden;height:50vh;display:flex;align-items:center;justify-content:center}
+  .hero-overlay.split .half.top{transform:translateY(-110%);transition:transform .68s cubic-bezier(.22,.9,.2,1)}
+  .hero-overlay.split .half.bottom{transform:translateY(110%);transition:transform .68s cubic-bezier(.22,.9,.2,1)}
 
-    .hero.split .half.top{transform:translateY(-110%);transition:transform .68s cubic-bezier(.22,.9,.2,1)}
-    .hero.split .half.bottom{transform:translateY(110%);transition:transform .68s cubic-bezier(.22,.9,.2,1)}
+  /* after cut, collapse and hide hero */
+  .hero-overlay.collapse{transform:translateY(-28vh) scale(.26);transition:transform .72s cubic-bezier(.22,.9,.2,1);transform-origin:center center}
 
-    .hero.collapse{transform:translateY(-28vh) scale(0.26);transition:transform .72s cubic-bezier(.22,.9,.2,1);transform-origin:center center}
+  main{max-width:1100px;margin:140px auto 60px;padding:16px;position:relative;z-index:20;visibility:hidden}
+  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
+  .card{border-radius:14px;overflow:hidden;padding:6px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 60px rgba(2,2,6,0.6);cursor:pointer;transition:transform .28s,box-shadow .28s}
+  .frame{width:100%;height:180px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center}
+  .frame img{max-width:100%;max-height:100%;object-fit:cover;display:block;transition:transform .45s}
+  .frame:hover img{transform:scale(1.06)}
+  .card:focus{outline:2px solid rgba(123,97,255,0.14)}
 
-    .neon-flicker{animation:neonFlicker 3s infinite}
-    @keyframes neonFlicker{0%{text-shadow:0 0 36px rgba(255,110,199,0.22),0 0 84px rgba(123,97,255,0.14)}45%{text-shadow:0 0 12px rgba(255,110,199,0.05)}100%{text-shadow:0 0 42px rgba(0,212,255,0.14),0 0 98px rgba(123,97,255,0.18)}}
+  .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:2000;background:linear-gradient(180deg,rgba(8,8,12,0.92),rgba(2,2,6,0.98))}
+  .lightbox.open{display:flex}
+  .lightbox img{max-width:95vw;max-height:85vh;border-radius:12px;box-shadow:0 40px 160px rgba(0,0,0,0.75)}
+  .controls{display:flex;gap:10px;margin-top:8px}
 
-    main{max-width:1100px;margin:140px auto 60px;padding:16px;position:relative;z-index:20}
-    .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:22px}
-    .card{border-radius:14px;overflow:hidden;padding:6px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 10px 60px rgba(2,2,6,0.6);cursor:pointer;transition:transform .28s cubic-bezier(.2,.9,.2,1),box-shadow .28s}
-    .frame{width:100%;height:180px;display:flex;align-items:center;justify-content:center;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.02)}
-    .frame img{max-width:100%;max-height:100%;object-fit:cover;display:block;transition:transform .45s ease}
-    .frame:hover img{transform:scale(1.06) translateZ(0)}
+  footer{color:rgba(255,255,255,0.9);text-align:center;margin:50px 0 80px;font-size:15px}
+  footer strong{background:linear-gradient(90deg,var(--n2),var(--n3));-webkit-background-clip:text;background-clip:text;color:transparent}
 
-    .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:90;background:linear-gradient(180deg,rgba(8,8,12,0.92),rgba(2,2,6,0.98))}
-    .lightbox.open{display:flex;animation:fadeIn .12s ease}
-    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-    .lightbox .content{max-width:95vw;max-height:92vh;display:flex;flex-direction:column;gap:12px;align-items:center}
-    .lightbox img{max-width:100%;max-height:80vh;border-radius:12px;box-shadow:0 40px 160px rgba(0,0,0,0.75);transform-origin:center center;transition:transform .25s ease}
-    .lightbox .controls{display:flex;gap:10px;align-items:center}
-    .btn{background:transparent;padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);color:#fff;cursor:pointer;font-weight:700}
-
-    footer{color:rgba(255,255,255,0.9);text-align:center;margin:50px 0 80px;font-size:15px}
-    footer strong{color:transparent;background:linear-gradient(90deg,var(--neon2),var(--neon3));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;text-shadow:0 0 24px rgba(123,97,255,0.14)}
-
-    @media (max-width:920px){.frame{height:150px}} @media (max-width:640px){.hero-line{font-size:clamp(32px,12vw,72px)}.frame{height:120px}header.site-header{top:10px}}
-  </style>
+  /* small responsive */
+  @media (max-width:920px){.frame{height:150px}}
+  @media (max-width:640px){.hero-text{font-size:32px} .frame{height:120px}}
+  /* spinner while scanning */
+  #loader{position:fixed;right:18px;bottom:18px;padding:8px 12px;border-radius:12px;background:rgba(0,0,0,0.5);z-index:4000;color:#dbeeff;font-weight:600;font-family:Inter;display:none}
+</style>
 </head>
 <body>
 
-  <canvas id="bgCanvas" aria-hidden="true"></canvas>
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
 
-  <header class="site-header" aria-hidden="true">
-    <div class="headline" role="banner">
-      <h2 id="top-title">Portfolio</h2>
+<header class="site-header" aria-hidden="true">
+  <div class="headline" id="headbox"><h2>Portfolio</h2></div>
+</header>
+
+<!-- HERO overlay -->
+<div class="hero-overlay" id="heroOverlay" aria-hidden="false">
+  <div class="hero-box">
+    <div class="half top"><div class="hero-text"><span class="fill" id="heroFillTop">WELCOME TO MY PORTFOLIO<div class="underline" aria-hidden="true"><span></span><span></span><span></span></div></span></div></div>
+    <div class="half bottom"><div class="hero-text"><span class="fill" id="heroFillBot">WELCOME TO MY PORTFOLIO<div class="underline" aria-hidden="true"><span></span><span></span><span></span></div></span></div></div>
+  </div>
+</div>
+
+<main id="mainContent" aria-hidden="true">
+  <section>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+      <div><h1 id="portfolioTitle" style="margin:0;font-family:Orbitron,Inter;font-size:28px;opacity:1">Portfolio</h1></div>
     </div>
-  </header>
+    <div class="gallery" id="gallery" aria-live="polite"></div>
+  </section>
 
-  <div class="hero" id="hero">
-    <div class="hero-wrap">
-      <div class="half top" aria-hidden="true">
-        <div class="hero-line neon-flicker"><span class="fill">WELCOME TO MY PORTFOLIO<div class="underline"><span></span><span></span><span></span></div></span></div>
-      </div>
-      <div class="half bottom" aria-hidden="true">
-        <div class="hero-line neon-flicker"><span class="fill">WELCOME TO MY PORTFOLIO<div class="underline"><span></span><span></span><span></span></div></span></div>
-      </div>
+  <footer>contact me on discord <strong>random698</strong></footer>
+</main>
+
+<div id="loader">Scanning repo…</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div style="text-align:center">
+    <img id="lightboxImg" alt="zoomed"/>
+    <div class="controls">
+      <button id="prevBtn">← Prev</button>
+      <button id="nextBtn">Next →</button>
+      <button id="closeBtn">Close</button>
+      <button id="homeBtn">Back to top</button>
     </div>
   </div>
+</div>
 
-  <main>
-    <section id="gallery-section">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-        <div>
-          <h1 id="portfolio-title" style="margin:0;font-family:Orbitron, Inter, sans-serif;font-size:28px;opacity:0;transform:translateY(10px)">Portfolio</h1>
-        </div>
-      </div>
+<script>
+/* -------------------- CONFIG -------------------- */
+const GITHUB_OWNER = "";      // <--- set your owner/username
+const GITHUB_REPO  = "";      // <--- set your repo name
+const GITHUB_PATH  = "";      // optional subfolder within repo, or empty
+const imageUrls = [];        // optional: direct raw image URLs (take priority)
+const MAX_IMAGES = 200;      // how many images to show at most
+/* ------------------------------------------------ */
 
-      <div class="gallery" id="gallery" aria-live="polite"></div>
-    </section>
+const canvas = document.getElementById('bgCanvas');
+const heroOverlay = document.getElementById('heroOverlay');
+const mainContent = document.getElementById('mainContent');
+const gallery = document.getElementById('gallery');
+const headbox = document.getElementById('headbox');
+const loader = document.getElementById('loader');
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn'), closeBtn = document.getElementById('closeBtn'), homeBtn = document.getElementById('homeBtn');
 
-    <footer>
-      contact me on discord <strong>random698</strong>
-    </footer>
-  </main>
+let images = [], currIndex = 0;
 
-  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="content">
-      <img id="lightbox-img" alt="zoomed image">
-      <div class="controls">
-        <button class="btn" id="prevBtn">← Prev</button>
-        <button class="btn" id="nextBtn">Next →</button>
-        <button class="btn" id="closeBtn">Close</button>
-        <button class="btn" id="homeBtn">Back to top</button>
-      </div>
-    </div>
-  </div>
+/* small particles background */
+(function particles(){
+  const ctx = canvas.getContext('2d');
+  let w = canvas.width = innerWidth, h = canvas.height = innerHeight;
+  let pts = Array.from({length: Math.max(40, Math.floor((w*h)/70000))}, ()=>({x: Math.random()*w, y: Math.random()*h, vx:(Math.random()-0.5)*0.35, vy:(Math.random()-0.5)*0.35, r: Math.random()*1.6+0.6}));
+  addEventListener('resize', ()=>{ w = canvas.width = innerWidth; h = canvas.height = innerHeight; });
+  function draw(){
+    ctx.clearRect(0,0,w,h); ctx.globalCompositeOperation='lighter';
+    for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=w; if(p.x>w)p.x=0; if(p.y<0)p.y=h; if(p.y>h)p.y=0; ctx.beginPath(); ctx.fillStyle='rgba(123,97,255,0.12)'; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){ const a=pts[i], b=pts[j]; const dx=a.x-b.x, dy=a.y-b.y; const d=dx*dx+dy*dy; if(d<12000){ const o = 1 - d/12000; ctx.strokeStyle = `rgba(123,97,255,${o*0.06})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-  <script>
-    const GITHUB_OWNER = "";
-    const GITHUB_REPO = "";
-    const GITHUB_PATH = "";
-    const imageUrls = [];
-
-    const canvas = document.getElementById('bgCanvas');
-    const hero = document.getElementById('hero');
-    const portfolioTitle = document.getElementById('portfolio-title');
-    const headerEl = document.querySelector('.site-header');
-    const gallery = document.getElementById('gallery');
-    const lightbox = document.getElementById('lightbox');
-    const lightboxImg = document.getElementById('lightbox-img');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-    const closeBtn = document.getElementById('closeBtn');
-    const homeBtn = document.getElementById('homeBtn');
-
-    let images = [];
-    let currIndex = 0;
-
-    (function particles(){
-      const ctx = canvas.getContext('2d');
-      let w=canvas.width=innerWidth, h=canvas.height=innerHeight;
-      const pts = Array.from({length: Math.max(40, Math.floor((w*h)/70000))}, ()=>({x: Math.random()*w, y: Math.random()*h, vx:(Math.random()-0.5)*0.4, vy:(Math.random()-0.5)*0.4, r: Math.random()*1.6+0.6}));
-      function resize(){ w=canvas.width=innerWidth; h=canvas.height=innerHeight; }
-      addEventListener('resize', resize);
-      function draw(){ ctx.clearRect(0,0,w,h); ctx.globalCompositeOperation='lighter';
-        for(let i=0;i<pts.length;i++){ const p=pts[i]; p.x+=p.vx; p.y+=p.vy; if(p.x<0)p.x=w; if(p.x>w)p.x=0; if(p.y<0)p.y=h; if(p.y>h)p.y=0; ctx.beginPath(); ctx.fillStyle='rgba(123,97,255,0.12)'; ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }
-        for(let i=0;i<pts.length;i++){ for(let j=i+1;j<pts.length;j++){ const a=pts[i], b=pts[j]; const dx=a.x-b.x, dy=a.y-b.y; const d=dx*dx+dy*dy; if(d<12000){ const o = 1 - d/12000; ctx.strokeStyle = `rgba(123,97,255,${o*0.06})`; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke(); } } }
-        requestAnimationFrame(draw);
+/* --- GitHub tree -> attempt to load images robustly --- */
+async function gatherImagesFromRepo(owner, repo, path='') {
+  if(!owner || !repo) return [];
+  loader.style.display = 'block';
+  try {
+    // get default branch
+    const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    if(!repoRes.ok) { console.warn('Could not fetch repo details', repoRes.status); loader.style.display='none'; return []; }
+    const repoJson = await repoRes.json();
+    const branch = repoJson.default_branch || 'main';
+    // fetch recursive tree
+    const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+    const treeRes = await fetch(treeUrl);
+    if(!treeRes.ok){ console.warn('Tree API failed', treeRes.status); loader.style.display='none'; return []; }
+    const treeJson = await treeRes.json();
+    const items = Array.isArray(treeJson.tree) ? treeJson.tree : [];
+    // candidate file paths: images by extension OR contain 'image' in name
+    const candidates = [];
+    for(const item of items){
+      if(item.type !== 'blob') continue;
+      const p = item.path;
+      if(path && !p.startsWith(path)) continue;
+      const lower = p.toLowerCase();
+      if(/\.(png|jpe?g|gif|webp|svg)$/i.test(lower) || lower.includes('_image') || lower.includes('/image') || lower.includes('image_')) {
+        candidates.push(p);
       }
-      draw();
-    })();
-
-    async function fetchGithubImages(owner, repo, path){
-      if(!owner || !repo) return [];
-      let defaultBranch = 'main';
-      try{
-        const repoRes = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-        if(repoRes.ok){ const repoJson = await repoRes.json(); defaultBranch = repoJson.default_branch || defaultBranch; }
-      }catch(e){}
-      async function listDir(dir){
-        const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${dir || ''}`;
+    }
+    console.log('candidates from tree:', candidates.length);
+    // attempt to load each raw.githubusercontent.com url (concurrency)
+    const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/`;
+    const loaded = [];
+    const concurrency = 10;
+    let idx = 0;
+    async function worker(){
+      while(idx < candidates.length && loaded.length < MAX_IMAGES){
+        const i = idx++;
+        const path = candidates[i];
+        const url = rawBase + path;
         try{
-          const res = await fetch(apiUrl);
-          if(!res.ok) return [];
-          const list = await res.json();
-          const arr = Array.isArray(list) ? list : [list];
-          let imgs = [];
-          for(const f of arr){
-            if(f.type === 'file' && /\.(jpe?g|png|gif|webp|svg)$/i.test(f.name)){
-              imgs.push(f.download_url || `https://raw.githubusercontent.com/${owner}/${repo}/${defaultBranch}/${f.path}`);
-            } else if(f.type === 'dir'){
-              const child = await listDir(f.path);
-              imgs = imgs.concat(child);
-            }
-          }
-          return imgs;
-        }catch(e){ return []; }
+          const ok = await tryLoadImage(url, 7000);
+          if(ok) { loaded.push(url); console.log('loaded', url); }
+        }catch(e){ /* ignore */ }
       }
-      return await listDir(path || '');
     }
+    const workers = Array.from({length:concurrency}, ()=>worker());
+    await Promise.all(workers);
+    loader.style.display = 'none';
+    return loaded;
+  } catch(err) {
+    console.warn('gatherImagesFromRepo error', err);
+    loader.style.display = 'none';
+    return [];
+  }
+}
 
-    function placeholderSVG(label){ const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'><defs><linearGradient id='g' x1='0' x2='1'><stop offset='0' stop-color='#1b1138'/><stop offset='1' stop-color='#002b3a'/></linearGradient></defs><rect width='100%' height='100%' fill='url(#g)' /><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, Arial' fill='#fff' font-size='48'>${label}</text></svg>`); return `data:image/svg+xml;charset=utf-8,${svg}`; }
+/* Try to load an image URL within timeout */
+function tryLoadImage(url, timeout = 7000){
+  return new Promise((resolve)=>{
+    const img = new Image();
+    let settled = false;
+    const t = setTimeout(()=>{ if(settled) return; settled = true; img.src = ''; resolve(false); }, timeout);
+    img.onload = ()=>{ if(settled) return; settled=true; clearTimeout(t); resolve(true); };
+    img.onerror = ()=>{ if(settled) return; settled=true; clearTimeout(t); resolve(false); };
+    img.src = url + (url.includes('?')? '&_':'?_') + 'cachebuster=' + Date.now();
+  });
+}
 
-    function createCard(url, idx){
-      const card=document.createElement('div'); card.className='card'; card.tabIndex=0; card.setAttribute('role','button');
-      const frame=document.createElement('div'); frame.className='frame';
-      const img=document.createElement('img'); img.src=url; img.alt=`Project image ${idx+1}`;
-      frame.appendChild(img); card.appendChild(frame);
-      frame.addEventListener('mousemove', e=>{ const r=frame.getBoundingClientRect(); const dx=(e.clientX - (r.left + r.width/2))/r.width; const dy=(e.clientY - (r.top + r.height/2))/r.height; img.style.transform=`scale(1.06) translate(${dx*6}px, ${dy*6}px)`; });
-      frame.addEventListener('mouseleave', ()=>{ img.style.transform='scale(1.00) translate(0,0)'; });
-      card.addEventListener('click', ()=>openLightbox(idx)); card.addEventListener('keypress', e=>{ if(e.key==='Enter') openLightbox(idx); });
-      return card;
+/* Create gallery card */
+function createCard(url, idx){
+  const card = document.createElement('div'); card.className='card'; card.tabIndex=0; card.setAttribute('role','button');
+  const frame = document.createElement('div'); frame.className='frame';
+  const img = document.createElement('img'); img.src = url; img.alt = `project ${idx+1}`;
+  frame.appendChild(img); card.appendChild(frame);
+  // micro-parallax
+  frame.addEventListener('mousemove', e=>{
+    const r = frame.getBoundingClientRect();
+    const dx = (e.clientX - (r.left + r.width/2))/r.width;
+    const dy = (e.clientY - (r.top + r.height/2))/r.height;
+    img.style.transform = `scale(1.06) translate(${dx*6}px, ${dy*6}px)`;
+  });
+  frame.addEventListener('mouseleave', ()=> img.style.transform = 'scale(1.00) translate(0,0)');
+  card.addEventListener('click', ()=> openLightbox(idx));
+  card.addEventListener('keypress', e=>{ if(e.key === 'Enter') openLightbox(idx) });
+  return card;
+}
+
+/* render gallery */
+function renderGallery(list){
+  gallery.innerHTML = '';
+  if(!list || !list.length){
+    for(let i=0;i<6;i++) gallery.appendChild(createCard(placeholderSVG('Placeholder ' + (i+1)), i));
+    return;
+  }
+  list.slice(0, MAX_IMAGES).forEach((u,i)=> gallery.appendChild(createCard(u,i)));
+}
+
+/* placeholder */
+function placeholderSVG(label){
+  const svg = encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='1200' height='800'><rect width='100%' height='100%' fill='#1b1138'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, Arial' fill='#fff' font-size='44'>${label}</text></svg>`);
+  return `data:image/svg+xml;charset=utf-8,${svg}`;
+}
+
+/* Lightbox */
+function openLightbox(i){
+  currIndex = i; lightboxImg.src = images[i]; lightbox.classList.add('open'); lightbox.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+}
+function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); document.body.style.overflow='auto'; }
+function showNext(){ if(!images.length) return; currIndex = (currIndex+1)%images.length; lightboxImg.src = images[currIndex]; }
+function showPrev(){ if(!images.length) return; currIndex = (currIndex-1+images.length)%images.length; lightboxImg.src = images[currIndex]; }
+
+prevBtn.addEventListener('click', showPrev);
+nextBtn.addEventListener('click', showNext);
+closeBtn.addEventListener('click', closeLightbox);
+homeBtn.addEventListener('click', ()=>{ closeLightbox(); window.scrollTo({top:0, behavior:'smooth'}); });
+document.addEventListener('keydown', (e)=>{ if(lightbox.classList.contains('open')){ if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowRight') showNext(); if(e.key === 'ArrowLeft') showPrev(); } });
+
+/* Hero sequence: reveal -> cut -> collapse -> show main */
+async function heroSequence(){
+  // ensure hero overlay covers everything and main hidden
+  document.body.style.overflow = 'hidden';
+  mainContent.style.visibility = 'hidden';
+  // ensure hero text fits: scale down if too wide
+  fitHeroText();
+  // simple reveal: wait then do cut split
+  await delay(900);
+  heroOverlay.classList.add('split');
+  await delay(420);
+  heroOverlay.classList.add('collapse');
+  // reveal header & main
+  headbox.classList.add('show');
+  mainContent.style.visibility = 'visible';
+  document.body.style.overflow = 'auto';
+  // remove hero from DOM after animation to avoid overlap
+  await delay(700);
+  heroOverlay.remove();
+}
+
+/* Fit hero text horizontally so it never overflows / overlaps */
+function fitHeroText(){
+  const fillTop = document.getElementById('heroFillTop');
+  const fillBot = document.getElementById('heroFillBot');
+  const containerW = Math.min(window.innerWidth * 0.94, 1400);
+  // measure natural width and compute scale
+  [fillTop, fillBot].forEach(el=>{
+    // reset
+    el.style.transform = 'scale(1)';
+    const parent = el.parentElement;
+    // measure
+    const rect = el.getBoundingClientRect();
+    if(rect.width > containerW){
+      const scale = containerW / rect.width;
+      el.style.transform = `scale(${scale})`;
+    } else {
+      el.style.transform = 'scale(1)';
     }
+  });
+}
 
-    function renderGallery(list){ gallery.innerHTML=''; if(!list.length){ for(let i=0;i<6;i++) gallery.appendChild(createCard(placeholderSVG('Placeholder '+(i+1)), i)); return; } list.forEach((u,i)=>gallery.appendChild(createCard(u,i))); }
+/* helper */
+function delay(ms){ return new Promise(r => setTimeout(r, ms)); }
 
-    function openLightbox(index){ currIndex=index; lightboxImg.src=images[index]; lightbox.classList.add('open'); lightbox.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
-    function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); document.body.style.overflow='auto'; }
-    function showNext(){ if(images.length===0) return; currIndex=(currIndex+1)%images.length; lightboxImg.src=images[currIndex]; }
-    function showPrev(){ if(images.length===0) return; currIndex=(currIndex-1+images.length)%images.length; lightboxImg.src=images[currIndex]; }
+/* Boot */
+document.addEventListener('DOMContentLoaded', async ()=>{
+  // start hero
+  heroSequence();
 
-    prevBtn.addEventListener('click', showPrev); nextBtn.addEventListener('click', showNext); closeBtn.addEventListener('click', closeLightbox); homeBtn.addEventListener('click', ()=>{ closeLightbox(); window.scrollTo({top:0,behavior:'smooth'}); });
-    document.addEventListener('keydown', e=>{ if(lightbox.classList.contains('open')){ if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowRight') showNext(); if(e.key==='ArrowLeft') showPrev(); } });
+  // load images: priority manual urls -> repo scanner
+  if(imageUrls && imageUrls.length){
+    images = imageUrls.slice();
+  } else {
+    // attempt to auto-discover images in repo
+    images = await gatherImagesFromRepo(GITHUB_OWNER, GITHUB_REPO, GITHUB_PATH);
+    // if none found, fallback to placeholders
+    if(!images || images.length === 0){
+      console.warn('No images found via auto-scan. You can either set imageUrls or check that repo is public & that files are real image files.');
+      images = Array.from({length:6}, (_,i)=> placeholderSVG('Placeholder ' + (i+1)));
+    }
+  }
+  renderGallery(images);
+});
 
-    const observer=new IntersectionObserver((entries)=>{ entries.forEach(ent=>{ if(ent.isIntersecting){ ent.target.style.transition='transform .45s cubic-bezier(.2,.9,.2,1), opacity .45s'; ent.target.style.transform='translateY(0)'; ent.target.style.opacity=1; observer.unobserve(ent.target); } }); }, {threshold:0.06});
-    const originalAppend=Element.prototype.appendChild; Element.prototype.appendChild=function(el){ const result=originalAppend.call(this,el); if(this===gallery && el.classList && el.classList.contains('card')){ el.style.transform='translateY(18px)'; el.style.opacity='0'; setTimeout(()=>observer.observe(el),90); } return result; }
+window.addEventListener('resize', ()=>{ fitHeroText(); });
 
-    document.addEventListener('DOMContentLoaded', async ()=>{
-      const topLine = document.querySelector('.half.top .hero-line');
-      const botLine = document.querySelector('.half.bottom .hero-line');
-      topLine.style.opacity=0; botLine.style.opacity=0;
-      await delay(80);
-      [topLine, botLine].forEach((el)=>{ el.style.transition='opacity .28s ease, transform .6s cubic-bezier(.2,.9,.2,1)'; el.style.opacity=1; el.style.transform='translateY(0) scale(1)'; el.style.transformOrigin='center'; });
-      await delay(900);
-      document.querySelector('.hero').classList.add('split');
-      await delay(420);
-      document.querySelector('.hero').classList.add('collapse');
-      headerEl.classList.add('show'); headerEl.setAttribute('aria-hidden','false');
-      portfolioTitle.style.transition='opacity .48s ease, transform .48s ease'; portfolioTitle.style.opacity=1; portfolioTitle.style.transform='translateY(0)';
-      await delay(680);
-      document.querySelector('.hero').remove();
-
-      if(imageUrls && imageUrls.length) images = imageUrls.slice(); else images = await fetchGithubImages(GITHUB_OWNER, GITHUB_REPO, GITHUB_PATH);
-      if(!images || images.length===0) images = Array.from({length:6}, (_,i)=>placeholderSVG('Placeholder '+(i+1)));
-      renderGallery(images);
-    });
-
-    function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
-
-    document.addEventListener('mousemove', e=>{
-      const hw = innerWidth/2, hh = innerHeight/2; const dx = (e.clientX - hw)/hw; const dy = (e.clientY - hh)/hh;
-      const h = document.querySelector('.hero'); if(!h) return; h.style.transform = `translate(${dx*8}px, ${dy*6}px)`;
-      const ht = document.querySelectorAll('.hero-line'); ht.forEach(el=>{ el.style.transform = `translate(${dx*18}px, ${dy*8}px) rotate(${dx*1.6}deg)`; });
-    });
-  </script>
+/* If you want to debug network errors, open DevTools console. The loader shows during scanning */
+</script>
 </body>
 </html>

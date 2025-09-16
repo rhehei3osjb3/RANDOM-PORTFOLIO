@@ -10,13 +10,18 @@
   *{box-sizing:border-box}
   html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--fg);-webkit-font-smoothing:antialiased}
 
-  /* HERO overlay */
+  /* HERO */
   .hero-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));pointer-events:auto}
-  .hero-inner{max-width:1400px;padding:24px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center}
-  .hero-text{font-family:Orbitron,Inter,system-ui;font-weight:900;font-size:clamp(40px,10vw,110px);line-height:1;color:var(--accent);text-align:center;white-space:nowrap;display:inline-block}
+  .hero-overlay.fade-out{animation:heroFade .48s ease forwards}
+  @keyframes heroFade{to{opacity:0;transform:translateY(-8px) scale(.995)}}
+
+  .hero-inner{max-width:1100px;max-width:92vw;padding:24px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  /* Reduced max font size and responsive scaling so the heading never overflows the viewport */
+  .hero-text{font-family:Orbitron,Inter,system-ui;font-weight:900;font-size:clamp(22px,6.5vw,56px);line-height:1;color:var(--accent);text-align:center;white-space:nowrap;display:inline-block;overflow:hidden}
+  #heroGradient{display:inline-block;transform-origin:center center;transition:transform .18s ease}
   .hero-sub{margin-top:10px;color:#ffffff;font-weight:600;opacity:0.95}
-  .char{display:inline-block;opacity:0;transform:translateY(8px);animation:charIn .45s cubic-bezier(.2,.9,.2,1) forwards;margin-right:6px}
-  .char.space{width:18px}
+  .char{display:inline-block;opacity:0;transform:translateY(8px);animation:charIn .45s cubic-bezier(.2,.9,.2,1) forwards;margin-right:4px}
+  .char.space{width:14px;margin-right:0}
   @keyframes charIn{to{opacity:1;transform:translateY(0)}}
 
   main{max-width:1200px;margin:120px auto 80px;padding:20px;position:relative;z-index:20;visibility:hidden}
@@ -27,7 +32,8 @@
   /* gallery */
   .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;margin-top:28px}
   .card{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));box-shadow:0 8px 40px rgba(0,0,0,0.55);cursor:pointer;display:flex;flex-direction:column}
-  .frame{height:260px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0f0820}
+  /* increased frame height to accommodate larger images */
+  .frame{height:320px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0f0820}
   .frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease,opacity .3s}
   .frame .file-icon{font-size:48px;opacity:0.12}
   .meta{padding:10px 12px;font-size:13px;color:rgba(255,255,255,0.75);display:none}
@@ -45,8 +51,8 @@
 
   footer{color:#064e1b;text-align:center;margin:40px 0 100px}
 
-  @media (max-width:900px){ .frame{height:220px} }
-  @media (max-width:640px){ .frame{height:160px} .hero-text{font-size:clamp(30px,12vw,64px)} }
+  @media (max-width:900px){ .frame{height:260px} }
+  @media (max-width:640px){ .frame{height:180px} .hero-text{font-size:clamp(18px,9vw,40px)} .char{margin-right:2px} }
 </style>
 </head>
 <body>
@@ -109,7 +115,30 @@ function revealHeroText(){
   heroGradient.innerHTML = text.split('').map(ch => ch === ' ' ? '<span class="char space">&nbsp;</span>' : `<span class="char">${ch}</span>`).join('');
   const chars = [...heroGradient.querySelectorAll('.char')];
   chars.forEach((c,i)=> c.style.animationDelay = (i*28) + 'ms');
+  // after characters are inserted, make sure the heading fits the viewport
+  adjustHeroScale();
 }
+
+function adjustHeroScale(){
+  try{
+    const g = document.getElementById('heroGradient');
+    if(!g) return;
+    // reset
+    g.style.transform = 'scale(1)';
+    const rect = g.getBoundingClientRect();
+    const maxW = Math.min(window.innerWidth * 0.92, 1100);
+    if(rect.width > maxW){
+      const scale = (maxW / rect.width) * 0.98; // a little padding
+      g.style.transform = `scale(${scale})`;
+    }
+  }catch(e){}
+}
+
+let resizeTimer = null;
+window.addEventListener('resize', ()=>{
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(()=> adjustHeroScale(), 120);
+});
 
 async function hideHeroAfter(ms=4000){
   await new Promise(r => setTimeout(r, ms));
@@ -213,6 +242,7 @@ document.addEventListener('keydown', e=>{ if(lightbox.classList.contains('open')
 
 /* --- main loader: fetch tree, pick candidates, probe concurrently, append quickly --- */
 async function loadRepo(owner,repo,path){
+  progressEl.style.display = '';
   progressEl.textContent = 'Scanning repository...';
   const cached = loadCache(owner,repo,path);
   if(cached && cached.length){
@@ -262,7 +292,8 @@ async function loadRepo(owner,repo,path){
 
   // save cache
   try{ saveCache(owner,repo,path,validated); }catch(e){}
-  progressEl.textContent = `Done — ${validated.length} files shown`;
+  // remove the final "Done — X files shown" text and hide the progress element (user requested removal)
+  try{ progressEl.textContent = ''; progressEl.style.display = 'none'; }catch(e){}
 }
 
 /* boot sequence */

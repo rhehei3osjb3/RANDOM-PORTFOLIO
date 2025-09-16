@@ -6,67 +6,68 @@
 <title>Portfolio — Auto GitHub Images</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --bg1:#020216; --bg2:#07102a;
-    --neon1:#ff6ec7; --neon2:#7b61ff; --neon3:#00d4ff;
-  }
+  :root{ --bg1:#020216; --bg2:#07102a; --accent:#ff8800; --muted:#dceffb; --fg:#eaf6ff }
   *{box-sizing:border-box}
-  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:#eaf6ff;overflow-x:hidden}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:linear-gradient(180deg,var(--bg1),var(--bg2));color:var(--fg);-webkit-font-smoothing:antialiased}
 
-  /* hero overlay (true fullscreen) */
-  .hero-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.04));pointer-events:auto}
-  .hero-inner{max-width:1400px;padding:20px;text-align:center;pointer-events:none}
-  .hero-text{font-family:Orbitron,Inter,system-ui;font-weight:900;font-size:clamp(38px,10vw,132px);line-height:0.92;color:transparent;-webkit-text-stroke:1.4px rgba(2,2,6,0.55);filter:drop-shadow(0 12px 80px rgba(123,97,255,0.12));white-space:nowrap;display:inline-block;transform-origin:center}
-  .hero-text .gradient{background:linear-gradient(90deg,var(--neon1),var(--neon2),var(--neon3));-webkit-background-clip:text;background-clip:text;color:transparent;padding:6px 10px;display:inline-block}
-  .underline{margin-top:10px;width:84%;max-width:980px;margin-left:auto;margin-right:auto}
-  .underline span{display:block;height:4px;margin:6px 0;background:linear-gradient(90deg,var(--neon2),var(--neon3));border-radius:3px;box-shadow:0 10px 34px rgba(123,97,255,0.12)}
+  /* HERO overlay */
+  .hero-overlay{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));pointer-events:auto}
+  .hero-inner{max-width:1400px;padding:24px;text-align:center;pointer-events:none;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .hero-text{font-family:Orbitron,Inter,system-ui;font-weight:900;font-size:clamp(40px,10vw,110px);line-height:1;color:var(--accent);text-align:center;white-space:nowrap;display:inline-block}
+  .hero-sub{margin-top:10px;color:#ffffff;font-weight:600;opacity:0.95}
+  .char{display:inline-block;opacity:0;transform:translateY(8px);animation:charIn .45s cubic-bezier(.2,.9,.2,1) forwards;margin-right:6px}
+  .char.space{width:18px}
+  @keyframes charIn{to{opacity:1;transform:translateY(0)}}
 
-  /* per-character reveal (fast & clear) */
-  .char{display:inline-block;opacity:0;transform:translateX(-16px) skewX(-4deg);filter:blur(1.2px);animation:charIn .46s cubic-bezier(.2,.9,.2,1) forwards}
-  @keyframes charIn{to{opacity:1;transform:translateX(0) skewX(0) filter:none}}
+  main{max-width:1200px;margin:120px auto 80px;padding:20px;position:relative;z-index:20;visibility:hidden}
+  header{display:flex;flex-direction:column;align-items:center}
+  h1{font-family:Orbitron,Inter;margin:6px 0;color:var(--accent);font-size:28px}
+  #portfolioSubtitle{color:#ffffff;margin-top:6px}
 
-  /* fade-out of hero (nice and readable before it disappears) */
-  .hero-overlay.fade-out{animation:heroFade .55s ease 1 forwards}
-  @keyframes heroFade{to{opacity:0;transform:scale(.98) translateY(-24px)}}
+  /* gallery */
+  .gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:22px;margin-top:28px}
+  .card{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.015));box-shadow:0 8px 40px rgba(0,0,0,0.55);cursor:pointer;display:flex;flex-direction:column}
+  .frame{height:260px;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#0f0820}
+  .frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease,opacity .3s}
+  .frame .file-icon{font-size:48px;opacity:0.12}
+  .meta{padding:10px 12px;font-size:13px;color:rgba(255,255,255,0.75);display:none}
+  .skeleton{width:100%;height:100%;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.06);font-weight:700}
 
-  /* layout */
-  main{max-width:1100px;margin:120px auto;padding:20px;position:relative;z-index:20;visibility:hidden}
-  .gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
-  .card{border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));box-shadow:0 10px 60px rgba(0,0,0,0.6);cursor:pointer;display:flex;flex-direction:column}
-  .frame{height:180px;display:flex;align-items:center;justify-content:center;overflow:hidden}
-  .frame img{max-width:100%;max-height:100%;object-fit:cover;display:block;transition:transform .4s}
-  .card .meta{padding:8px 12px;font-size:13px;color:rgba(255,255,255,0.88);font-weight:700}
+  /* controls */
+  .toolbar{display:flex;gap:12px;align-items:center;justify-content:center;margin-top:8px}
+  .progress{font-size:13px;color:rgba(255,255,255,0.8)}
 
-  /* lightbox */
-  .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.88), rgba(0,0,0,0.95));z-index:10001}
+  .lightbox{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:linear-gradient(180deg, rgba(0,0,0,0.9), rgba(0,0,0,0.98));z-index:10001}
   .lightbox.open{display:flex}
-  .lightbox img{max-width:95vw;max-height:88vh;border-radius:10px}
+  .lightbox img{max-width:94vw;max-height:90vh;border-radius:10px}
   .controls{display:flex;gap:10px;margin-top:8px}
-  .controls button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:#fff;cursor:pointer}
+  .controls button{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px;border-radius:8px;color:var(--fg);cursor:pointer}
 
-  footer{color:rgba(255,255,255,0.9);text-align:center;margin:60px 0 120px}
-  footer strong{background:linear-gradient(90deg,var(--neon2),var(--neon3));-webkit-background-clip:text;background-clip:text;color:transparent}
+  footer{color:#064e1b;text-align:center;margin:40px 0 100px}
 
-  @media (max-width:640px){ .frame{height:120px} .hero-text{font-size:clamp(30px,12vw,64px)} }
+  @media (max-width:900px){ .frame{height:220px} }
+  @media (max-width:640px){ .frame{height:160px} .hero-text{font-size:clamp(30px,12vw,64px)} }
 </style>
 </head>
 <body>
 
-<!-- HERO overlay (top) -->
+<!-- HERO -->
 <div class="hero-overlay" id="heroOverlay" aria-hidden="false">
-  <div class="hero-inner" id="heroInner" aria-hidden="false">
-    <div id="heroText" class="hero-text" aria-hidden="false">
-      <!-- text will be split into characters for a clear left→right reveal -->
-      <span class="gradient" id="heroGradient">WELCOME TO MY PORTFOLIO</span>
-    </div>
-    <div class="underline" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="hero-inner">
+    <div id="heroText" class="hero-text" aria-hidden="false"><span id="heroGradient">WELCOME TO MY PORTFOLIO</span></div>
+    <div class="hero-sub" id="heroSub">these are the works i did so far</div>
   </div>
 </div>
 
 <main id="mainContent" aria-hidden="true">
-  <h1 style="font-family:Orbitron,Inter;margin-bottom:8px">Portfolio</h1>
+  <header>
+    <h1>Portfolio</h1>
+    <div id="portfolioSubtitle">these are the works i did so far</div>
+    <div class="toolbar"><div class="progress" id="progress">Loading…</div></div>
+  </header>
+
   <div class="gallery" id="gallery" aria-live="polite"></div>
-  <footer style="margin-top:34px">contact me on discord <strong>random698</strong></footer>
+  <footer>contact me on discord: user: <strong>random698</strong></footer>
 </main>
 
 <!-- lightbox -->
@@ -82,252 +83,202 @@
 </div>
 
 <script>
-/*
-  Auto GitHub repo image loader + clean hero.
-  - Does auto-detection (github.io, raw.githubusercontent.com, github.com pages) so you don't edit the file.
-  - Scans repo tree recursively via GitHub API and tries raw.githubusercontent URLs.
-  - Loads only images that actually load into frames (no debug UI).
-  - If repo is private, this cannot access images without a token (public repos only).
-*/
+// CONFIG: set owner/repo/path if auto-detect doesn't work
+const CONFIG_OWNER = "";
+const CONFIG_REPO = "";
+const CONFIG_PATH = "";
+const MAX_IMAGES = 1000; // safety cap
+const CACHE_TTL = 6 * 60 * 60 * 1000; // 6 hours
 
-/* CONFIG — leave empty to auto-detect from where the page runs */
-const CONFIG_OWNER = "";   // optional override: e.g. "your-username"
-const CONFIG_REPO  = "";   // optional override: e.g. "my-repo"
-const CONFIG_PATH  = "";   // optional: start folder inside the repo
-const MAX_IMAGES = 500;    // safety cap
-
-/* DOM */
 const heroOverlay = document.getElementById('heroOverlay');
 const heroGradient = document.getElementById('heroGradient');
+const heroSub = document.getElementById('heroSub');
 const mainContent = document.getElementById('mainContent');
 const gallery = document.getElementById('gallery');
+const progressEl = document.getElementById('progress');
+
 const lightbox = document.getElementById('lightbox');
 const lightboxImg = document.getElementById('lightboxImg');
 const prevBtn = document.getElementById('prevBtn'), nextBtn = document.getElementById('nextBtn'), closeBtn = document.getElementById('closeBtn');
 
-let images = [], currIndex = 0;
+let images = [], allItems = [], currIndex = 0;
 
-/* --- HERO reveal (clear, not cut) --- */
+/* --- hero split for per-char reveal with larger word gaps --- */
 function revealHeroText(){
-  // replace hero text with per-char spans so it reveals nicely left->right.
   const text = heroGradient.textContent.trim();
-  heroGradient.innerHTML = text.split('').map(ch => {
-    if(ch === ' ') return `<span class="char">&nbsp;</span>`;
-    return `<span class="char">${ch}</span>`;
-  }).join('');
+  heroGradient.innerHTML = text.split('').map(ch => ch === ' ' ? '<span class="char space">&nbsp;</span>' : `<span class="char">${ch}</span>`).join('');
   const chars = [...heroGradient.querySelectorAll('.char')];
-  chars.forEach((c,i) => c.style.animationDelay = (i*22) + 'ms');
+  chars.forEach((c,i)=> c.style.animationDelay = (i*28) + 'ms');
 }
 
-/* hero removal */
-async function hideHeroAfter(ms=1200){
-  await delay(ms);
+async function hideHeroAfter(ms=4000){
+  await new Promise(r => setTimeout(r, ms));
   heroOverlay.classList.add('fade-out');
-  await delay(420);
-  heroOverlay.remove();
-  // now reveal main
+  await new Promise(r => setTimeout(r, 420));
+  try{ heroOverlay.remove(); }catch(e){}
   mainContent.style.visibility = 'visible';
   mainContent.setAttribute('aria-hidden','false');
 }
 
-/* small delay helper */
-function delay(ms){ return new Promise(r => setTimeout(r, ms)); }
-
-/* --- AUTO-DETECT repo owner/repo --- */
-function detectRepoFromLocation(){
-  // If CONFIG provided, prefer that
-  if(CONFIG_OWNER && CONFIG_REPO) return {owner:CONFIG_OWNER, repo:CONFIG_REPO, path: CONFIG_PATH || ""};
-
-  const host = location.hostname;
-  const path = location.pathname;
-  // 1) raw.githubusercontent.com => /owner/repo/branch/...
-  if(host.includes('raw.githubusercontent.com')){
-    const parts = path.split('/').filter(Boolean); // ['', owner, repo, branch, ...]
-    if(parts.length >= 3) return {owner: parts[0], repo: parts[1], path: parts.slice(3).join('/') || ""};
-  }
-  // 2) github.io pages -> owner is subdomain
-  if(host.endsWith('github.io')){
-    const sub = host.split('.')[0];
-    const segments = path.split('/').filter(Boolean);
-    // if page is at username.github.io/repo/... then repo is first path segment; else it's a user page -> repo = sub
-    if(segments.length >= 1) return { owner: sub, repo: segments[0], path: segments.slice(1).join('/') || "" };
-    return { owner: sub, repo: sub, path: "" };
-  }
-  // 3) github.com pages (raw html might still run): /owner/repo/...
-  if(host === 'github.com' || host.endsWith('github.com')){
-    const seg = path.split('/').filter(Boolean);
-    if(seg.length >= 2) return { owner: seg[0], repo: seg[1], path: seg.slice(2).join('/') || "" };
-  }
-  // 4) fallback: no detection
+/* --- GitHub helpers --- */
+function detectRepo(){
+  if(CONFIG_OWNER && CONFIG_REPO) return {owner:CONFIG_OWNER, repo:CONFIG_REPO, path:CONFIG_PATH || ''};
+  const host = location.hostname, path = location.pathname;
+  if(host.includes('raw.githubusercontent.com')){ const parts = path.split('/').filter(Boolean); if(parts.length>=3) return {owner:parts[0], repo:parts[1], path:parts.slice(3).join('/')||''}; }
+  if(host.endsWith('github.io')){ const sub = host.split('.')[0]; const seg = path.split('/').filter(Boolean); if(seg.length>=1) return {owner:sub, repo:seg[0], path:seg.slice(1).join('')||''}; return {owner:sub, repo:sub, path:''}; }
+  if(host === 'github.com' || host.endsWith('github.com')){ const seg = path.split('/').filter(Boolean); if(seg.length>=2) return {owner:seg[0], repo:seg[1], path:seg.slice(2).join('/')||''}; }
   return null;
 }
 
-/* --- GitHub: fetch repo default branch and tree (recursive) --- */
+async function fetchJson(url, opts={}){
+  try{
+    const controller = new AbortController();
+    const id = setTimeout(()=>controller.abort(), 8000);
+    const res = await fetch(url, {...opts, signal:controller.signal});
+    clearTimeout(id);
+    if(!res.ok) throw new Error('bad');
+    return await res.json();
+  }catch(e){ return null; }
+}
+
 async function fetchRepoTree(owner, repo){
   const api = `https://api.github.com/repos/${owner}/${repo}`;
-  try{
-    const r = await fetch(api, {headers:{'Accept':'application/vnd.github.v3+json'}});
-    if(!r.ok) throw new Error('repo fetch failed ' + r.status);
-    const repoJson = await r.json();
-    const branch = repoJson.default_branch || 'main';
-    const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
-    const tRes = await fetch(treeUrl, {headers:{'Accept':'application/vnd.github.v3+json'}});
-    if(!tRes.ok) throw new Error('tree fetch failed ' + tRes.status);
-    const treeJson = await tRes.json();
-    return {branch, tree: Array.isArray(treeJson.tree) ? treeJson.tree : []};
-  }catch(err){
-    console.warn('fetchRepoTree error', err);
-    return null;
-  }
+  const repoJson = await fetchJson(api);
+  if(!repoJson) return null;
+  const branch = repoJson.default_branch || 'main';
+  const treeUrl = `https://api.github.com/repos/${owner}/${repo}/git/trees/${branch}?recursive=1`;
+  const treeJson = await fetchJson(treeUrl);
+  if(!treeJson || !Array.isArray(treeJson.tree)) return {branch, tree:[]};
+  return {branch, tree: treeJson.tree};
 }
 
-/* --- Heuristics to pick candidate image paths (covers your filenames like ..._image_2024-03-...) --- */
-function pickCandidates(tree, folder=''){
-  const candidates = [];
-  const folderPrefix = folder ? folder.replace(/^\/*/,'') : '';
-  for(const node of tree){
-    if(node.type !== 'blob') continue;
-    const p = node.path;
-    if(folderPrefix && !p.startsWith(folderPrefix)) continue;
-    const lower = p.toLowerCase();
-    if(/\.(png|jpe?g|gif|webp|svg)$/i.test(lower) ||
-       lower.includes('_image') || lower.includes('/image') || lower.includes('image_') ||
-       /(^|\b)img\b/.test(lower) || lower.includes('uploads') || lower.includes('/assets/')){
-      candidates.push(p);
-    }
-  }
-  // fallback: if none matched, include many blobs (cap)
-  if(candidates.length === 0){
-    let added = 0;
-    for(const node of tree){
-      if(node.type !== 'blob') continue;
-      const p = node.path;
-      if(folderPrefix && !p.startsWith(folderPrefix)) continue;
-      candidates.push(p);
-      if(++added >= 800) break;
-    }
-  }
-  return candidates;
-}
+function isImagePath(p){ return /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(p); }
+function isDisplayable(p){ return isImagePath(p) || /\.(pdf|mp4|webm|mov|txt|md|json|svg)$/i.test(p); }
 
-/* tryLoadImage with timeout; returns boolean */
-function tryLoadImage(url, ms=7000){
+/* try loading image quickly with timeout */
+function probeImage(url, ms=4500){
   return new Promise(resolve=>{
-    const img = new Image();
-    let done = false;
-    const timer = setTimeout(()=>{ if(done) return; done = true; img.src=''; resolve(false); }, ms);
-    img.onload = ()=>{ if(done) return; done = true; clearTimeout(timer); resolve(true); };
-    img.onerror = ()=>{ if(done) return; done = true; clearTimeout(timer); resolve(false); };
-    img.src = encodeURI(url) + (url.includes('?') ? '&_=' : '?_=') + Date.now();
+    const img = new Image(); let done=false;
+    const timer = setTimeout(()=>{ if(done) return; done=true; img.src=''; resolve(false); }, ms);
+    img.onload = ()=>{ if(done) return; done=true; clearTimeout(timer); resolve(true); };
+    img.onerror = ()=>{ if(done) return; done=true; clearTimeout(timer); resolve(false); };
+    img.src = url + (url.includes('?') ? '&_=' : '?_=') + Date.now();
   });
 }
 
-/* --- Build raw URLs and test them (concurrent) --- */
-async function loadImagesFromRepo(owner, repo, pathInRepo=''){
-  const got = await fetchRepoTree(owner, repo);
-  if(!got) return [];
-  const branch = got.branch;
-  const tree = got.tree;
-  const candidates = pickCandidates(tree, pathInRepo);
-  const rawBase = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/`;
-  const loaded = [];
-  let index = 0;
-  const concurrency = 8;
-  async function worker(){
-    while(index < candidates.length && loaded.length < MAX_IMAGES){
-      const i = index++;
-      const p = candidates[i];
-      const url = rawBase + p;
-      try{
-        const ok = await tryLoadImage(url, 7000);
-        if(ok) loaded.push(url);
-      }catch(e){}
-    }
-  }
-  await Promise.all(Array.from({length:concurrency}, ()=>worker()));
-  return loaded;
-}
+/* cache helpers */
+function cacheKey(owner,repo,path){ return `auto-gh:${owner}:${repo}:${path||''}`; }
+function saveCache(owner,repo,path,items){ try{ localStorage.setItem(cacheKey(owner,repo,path), JSON.stringify({ts:Date.now(), items})); }catch(e){} }
+function loadCache(owner,repo,path){ try{ const raw = localStorage.getItem(cacheKey(owner,repo,path)); if(!raw) return null; const j = JSON.parse(raw); if(!j.ts || !Array.isArray(j.items)) return null; if(Date.now() - j.ts > CACHE_TTL) return null; return j.items; }catch(e){ return null; } }
 
-/* --- Render results into the gallery --- */
-function renderGallery(urls){
-  gallery.innerHTML = '';
-  if(!urls || urls.length === 0){
-    // graceful fallback placeholders (should be rare)
-    for(let i=0;i<6;i++){
-      const card = document.createElement('div'); card.className='card';
-      const frame = document.createElement('div'); frame.className='frame';
-      frame.innerHTML = `<svg width="320" height="180" xmlns="http://www.w3.org/2000/svg"><rect width="100%" height="100%" fill="#1b1138"/><text x="50%" y="50%" fill="#fff" font-family="Inter" font-size="24" text-anchor="middle" dominant-baseline="middle">Placeholder ${i+1}</text></svg>`;
-      card.appendChild(frame);
-      gallery.appendChild(card);
-    }
-    return;
-  }
+/* append card for any file (images or generic) */
+function appendCard(item){
+  // item: {url, path, isImage}
+  const card = document.createElement('div'); card.className='card';
+  const frame = document.createElement('div'); frame.className='frame';
 
-  urls.forEach((u,i)=>{
-    const card = document.createElement('div'); card.className = 'card';
-    const frame = document.createElement('div'); frame.className = 'frame';
-    const img = document.createElement('img'); img.src = u; img.alt = `image ${i+1}`;
+  if(item.isImage){
+    const img = document.createElement('img'); img.loading='lazy'; img.decoding='async'; img.src = item.url; img.alt = item.path.split('/').pop();
+    img.addEventListener('load', ()=> img.style.opacity = 1);
+    img.addEventListener('error', ()=>{
+      frame.innerHTML = `<div class=\"skeleton\">broken image</div>`;
+    });
     frame.appendChild(img);
-    card.appendChild(frame);
-    const meta = document.createElement('div'); meta.className='meta'; meta.textContent = u.split('/').slice(-2).join('/');
-    card.appendChild(meta);
-    card.addEventListener('click', ()=> openLightbox(i));
-    gallery.appendChild(card);
+  } else {
+    // generic file: show a lightweight icon and link
+    frame.innerHTML = `<div style=\"text-align:center;padding:18px;color:rgba(255,255,255,0.9)\"><div class=\"file-icon\">📄</div><div style=\"margin-top:8px;font-size:13px;color:rgba(255,255,255,0.75)\">${item.path.split('/').pop()}</div></div>`;
+    frame.addEventListener('click', ()=> window.open(item.url, '_blank'));
+  }
+
+  card.appendChild(frame);
+  // clicking opens lightbox for images, raw for others
+  card.addEventListener('click', ()=>{
+    if(item.isImage){
+      openLightboxBySrc(item.url);
+    } else {
+      window.open(item.url, '_blank');
+    }
   });
+
+  gallery.appendChild(card);
 }
 
-/* --- Lightbox handlers --- */
-function openLightbox(i){
-  currIndex = i;
-  lightboxImg.src = images[i];
-  lightbox.classList.add('open');
-  lightbox.setAttribute('aria-hidden','false');
-  document.body.style.overflow = 'hidden';
-}
-function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden','true'); document.body.style.overflow = 'auto'; }
+/* open lightbox */
+function openLightboxBySrc(src){ currIndex = images.indexOf(src); lightboxImg.src = src; lightbox.classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLightbox(){ lightbox.classList.remove('open'); document.body.style.overflow='auto'; }
 function nextImg(){ if(!images.length) return; currIndex = (currIndex+1)%images.length; lightboxImg.src = images[currIndex]; }
 function prevImg(){ if(!images.length) return; currIndex = (currIndex-1+images.length)%images.length; lightboxImg.src = images[currIndex]; }
 prevBtn.addEventListener('click', prevImg); nextBtn.addEventListener('click', nextImg); closeBtn.addEventListener('click', closeLightbox);
-document.addEventListener('keydown', e=>{ if(lightbox.classList.contains('open')){ if(e.key === 'Escape') closeLightbox(); if(e.key === 'ArrowRight') nextImg(); if(e.key === 'ArrowLeft') prevImg(); } });
+document.addEventListener('keydown', e=>{ if(lightbox.classList.contains('open')){ if(e.key==='Escape') closeLightbox(); if(e.key==='ArrowRight') nextImg(); if(e.key==='ArrowLeft') prevImg(); } });
 
-/* --- Boot: run hero then auto-detect & load images --- */
-async function boot(){
-  // reveal hero gracefully
-  revealHeroText();
-  // try detection immediately so loading can run in parallel
-  const auto = detectRepoFromLocation() || null;
-  let owner=null, repo=null, folder='';
-  if(auto){ owner = auto.owner; repo = auto.repo; folder = (CONFIG_PATH || auto.path || '').replace(/^\/*/,''); }
-  // If user set CONFIG override, prefer
-  if(CONFIG_OWNER && CONFIG_REPO){ owner = CONFIG_OWNER; repo = CONFIG_REPO; folder = CONFIG_PATH || folder; }
-
-  // start loading images in background if we have owner/repo
-  let loadedUrls = [];
-  if(owner && repo){
-    // kick off load but don't block hero reveal; show gallery when done
-    const loadPromise = loadImagesFromRepo(owner, repo, folder).then(urls=>{
-      images = urls.slice();
-      loadedUrls = urls;
-      renderGallery(images);
-      return urls;
-    }).catch(()=>{ images = []; renderGallery([]); return []; });
-    // keep hero visible briefly but allow load to continue
-    await hideHeroAfter(900);
-    // wait for repo load to complete if it hasn't
-    await loadPromise;
-  } else {
-    // no auto-detect: hide hero then show placeholders
-    await hideHeroAfter(900);
-    renderGallery([]); // will show placeholders
+/* --- main loader: fetch tree, pick candidates, probe concurrently, append quickly --- */
+async function loadRepo(owner,repo,path){
+  progressEl.textContent = 'Scanning repository...';
+  const cached = loadCache(owner,repo,path);
+  if(cached && cached.length){
+    // show cached quickly
+    gallery.innerHTML = '';
+    images = [];
+    for(const it of cached){ appendCard(it); if(it.isImage) images.push(it.url); }
+    progressEl.textContent = `Loaded from cache — ${cached.length} files`;
   }
 
-  // ensure main content visible
-  mainContent.style.visibility = 'visible';
+  const t = await fetchRepoTree(owner,repo);
+  if(!t){ progressEl.textContent = 'Could not read repository (rate-limited or not found)'; return; }
+
+  // pick blobs under path
+  const folderPrefix = path ? path.replace(/^\/*/,'') + '/' : '';
+  const blobs = t.tree.filter(n => n.type === 'blob' && (!folderPrefix || n.path.startsWith(folderPrefix)));
+  if(!blobs.length){ progressEl.textContent = 'No files found in repository.'; return; }
+
+  // prefer obvious assets first (images) — sort to try images earlier
+  const items = blobs.map(b=>({path:b.path, isImage:isImagePath(b.path), url:`https://raw.githubusercontent.com/${owner}/${repo}/${t.branch}/${b.path}`})).filter(it=>isDisplayable(it.path) || it.isImage);
+  allItems = items;
+  progressEl.textContent = `Found ${items.length} files — validating...`;
+
+  // concurrency probe
+  let idx = 0; const concurrency = 18; const validated = [];
+  async function worker(){
+    while(idx < items.length && validated.length < MAX_IMAGES){
+      const i = idx++; const it = items[i];
+      // probe images quickly, for other files accept immediately
+      if(it.isImage){
+        const ok = await probeImage(it.url, 4000);
+        // if ok show as image, if not, still show a link card (so "all uploaded files appear")
+        const cardItem = {url:it.url, path:it.path, isImage: !!ok};
+        validated.push(cardItem);
+        appendCard(cardItem);
+        if(cardItem.isImage) images.push(cardItem.url);
+      } else {
+        // non-image: append as link (fast)
+        const cardItem = {url:it.url, path:it.path, isImage:false};
+        validated.push(cardItem);
+        appendCard(cardItem);
+      }
+      progressEl.textContent = `Validated ${validated.length} / ${items.length}`;
+    }
+  }
+  await Promise.all(Array.from({length:concurrency}, ()=>worker()));
+
+  // save cache
+  try{ saveCache(owner,repo,path,validated); }catch(e){}
+  progressEl.textContent = `Done — ${validated.length} files shown`;
 }
 
-/* start */
-document.addEventListener('DOMContentLoaded', ()=>{ boot(); });
-window.addEventListener('resize', ()=>{ /* keep hero readable if still present */ try{ const g = document.getElementById('heroGradient'); if(g) { const maxW = Math.min(window.innerWidth * 0.92, 1400); const rect = g.getBoundingClientRect(); if(rect.width > maxW) g.style.transform = `scale(${(maxW/rect.width)*0.98})`; else g.style.transform = 'scale(1)'; }}catch(e){} });
+/* boot sequence */
+async function boot(){
+  revealHeroText();
+  const auto = detectRepo();
+  let owner=null, repo=null, path='';
+  if(auto){ owner = auto.owner; repo = auto.repo; path = (CONFIG_PATH || auto.path || '').replace(/^\/*/,''); }
+  if(CONFIG_OWNER && CONFIG_REPO){ owner = CONFIG_OWNER; repo = CONFIG_REPO; path = CONFIG_PATH || path; }
+
+  // start scanning early while hero still showing — don't block hero timing
+  if(owner && repo){ loadRepo(owner,repo,path).catch(()=>{}); }
+  await hideHeroAfter(4000);
+}
+
+document.addEventListener('DOMContentLoaded', ()=> boot());
 
 </script>
 </body>
